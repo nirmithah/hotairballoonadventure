@@ -88,6 +88,7 @@ let invincibilityBlinkInterval = null;
 let birdBlinkOn = true;
 let pendingInvincibility = false;
 let collidingPipe = null; // Store the pipe that caused the collision
+let levelCoinsCollected = 0; // Track coins collected during the current level
 
 // Level settings (will be set based on selected level)
 let pipeWidth = 60;
@@ -265,6 +266,7 @@ function startLevel(levelIndex) {
     // Reset coins
     coins.length = 0;
     coinSpawnTimer = 0;
+    levelCoinsCollected = 0;
     
     // Update coin display
     updateCoinDisplay();
@@ -592,6 +594,7 @@ function checkCollisions() {
             // Check if bird is close enough to collect coin
             if (distance < (coin.size / 2 + bird.width / 2)) {
                 coin.collected = true;
+                levelCoinsCollected++;
                 addCoin();
             }
         }
@@ -636,6 +639,7 @@ function completeLevel() {
         // Calculate coins earned: level number * 1.5, rounded up
         const levelNumber = currentLevelIndex + 1;
         const coinsEarned = Math.ceil(levelNumber * 1.5);
+        const totalCoinsEarned = coinsEarned + levelCoinsCollected;
         
         // Add coins
         addCoins(coinsEarned);
@@ -646,7 +650,7 @@ function completeLevel() {
         
         // Update coins display in popup
         if (levelCompleteCoinsCount) {
-            levelCompleteCoinsCount.textContent = coinsEarned;
+            levelCompleteCoinsCount.textContent = totalCoinsEarned;
         }
         
         // Mark level as completed
@@ -813,6 +817,7 @@ function resetGame() {
         // Reset coins
         coins.length = 0;
         coinSpawnTimer = 0;
+        levelCoinsCollected = 0;
     }
 }
 
